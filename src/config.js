@@ -3,9 +3,9 @@ const path = require("path");
 module.exports = {
   dbDirectory: path.join(__dirname, "..", "databases"),
   dbCount: 15,
-  initialDocumentsPerDb: 50,
-  updateIntervalMs: 15000,
+  initialDocumentsPerDb: 250,
+  updateIntervalMs: 5000,
   minDocsToUpdatePerTick: 1,
-  maxDocsToUpdatePerTick: 7,
+  maxDocsToUpdatePerTick: 80,
   dbPrefix: "source",
 };

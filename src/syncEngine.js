@@ -44,11 +44,10 @@ async function syncSingleSource(sourceName, dbPath) {
       "SELECT last_successful_sync FROM sync_metadata WHERE source_id = ?",
     )
     .get(sourceName);
-  const lastSync = meta
+  let currentCursor = meta
     ? meta.last_successful_sync
     : "1970-01-01T00:00:00.000Z";
 
-  let offset = 0;
   const batchSize = 100;
   let totalSynced = 0;
 
@@ -59,10 +58,10 @@ async function syncSingleSource(sourceName, dbPath) {
                 SELECT * FROM documents
                 WHERE last_modified_at > ?
                 ORDER BY last_modified_at ASC
-                LIMIT ? OFFSET ?
+                LIMIT ? 
             `,
       )
-      .all(lastSync, batchSize, offset);
+      .all(currentCursor, batchSize);
     if (rows.length === 0) break;
 
     const upsert = centralDb.prepare(`
@@ -92,8 +91,8 @@ async function syncSingleSource(sourceName, dbPath) {
       }
     });
     transaction(rows);
+    currentCursor = rows[rows.length - 1].last_modified_at;
     totalSynced += rows.length;
-    offset += batchSize;
     if (rows.length < batchSize) break;
   }
   centralDb
@@ -104,7 +103,7 @@ async function syncSingleSource(sourceName, dbPath) {
         ON CONFLICT(source_id) DO UPDATE SET last_successful_sync = excluded.last_successful_sync
     `,
     )
-    .run(sourceName, new Date().toISOString());
+    .run(sourceName, currentCursor);
 
   if (totalSynced > 0) {
     console.log(
