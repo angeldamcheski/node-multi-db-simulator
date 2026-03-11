@@ -101,7 +101,7 @@ function maybeCreateDocument(db, dbIndex) {
   const chance = Math.random();
 
   // 30% chance to create a new document
-  if (chance > 0.4) return;
+  if (chance < 0.4) return;
 
   const id = crypto.randomUUID();
   const now = new Date().toISOString();
