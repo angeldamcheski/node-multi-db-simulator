@@ -17,10 +17,10 @@ if (once) {
 }
 
 startSimulation();
-const SYNC_INTERVAL = 3000;
-console.log(
-  `\x1b[34m[SYSTEM]\x1b[0m Sync Service scheduled for every ${SYNC_INTERVAL / 1000}s`,
-);
-setInterval(async () => {
-  await syncAllSources();
-}, SYNC_INTERVAL);
+// const SYNC_INTERVAL = 3000;
+// console.log(
+//   `\x1b[34m[SYSTEM]\x1b[0m Sync Service scheduled for every ${SYNC_INTERVAL / 1000}s`,
+// );
+// setInterval(async () => {
+//   await syncAllSources();
+// }, SYNC_INTERVAL);
